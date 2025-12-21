@@ -1,0 +1,131 @@
+@model HomeViewModel;
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Vehicle Management System</h1>
+    <p>Manage your Ford vehicles with Best Practices</p>
+    
+    @if(!string.IsNullOrEmpty(ViewBag.ErrorMessage)) 
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Error:</strong> @ViewBag.ErrorMessage
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+    
+    <div class="mb-4">
+        <h3>Add New Vehicle</h3>
+        <div class="btn-group" role="group">
+            <a href="/Home/AddVehicle?type=mustang" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add Mustang
+            </a>
+            <a href="/Home/AddVehicle?type=explorer" class="btn btn-success">
+                <i class="fas fa-plus"></i> Add Explorer
+            </a>
+            <a href="/Home/AddVehicle?type=escape" class="btn btn-info">
+                <i class="fas fa-plus"></i> Add Escape
+            </a>
+        </div>
+    </div>
+    
+    <h3>Current Vehicles</h3>
+    
+    @if (Model.Vehicles.Count == 0)
+    {
+        <div class="alert alert-info">
+            No vehicles in the system. Add your first vehicle using the buttons above!
+        </div>
+    }
+    else
+    {
+        <table class="table table-striped table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Type</th>
+                    <th>Brand</th>
+                    <th>Model</th>
+                    <th>Color</th>
+                    <th>Year</th>
+                    <th>Horsepower</th>
+                    <th>Transmission</th>
+                    <th>Gallons</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var vehicle in Model.Vehicles)
+            {
+                <tr>
+                    <td>
+                        <small>@vehicle.ID.ToString().Substring(0, 8)...</small>
+                    </td>
+                    <td>
+                        <span class="badge badge-secondary">@(vehicle.GetType().Name)</span>
+                    </td>
+                    <td>@vehicle.Brand</td>
+                    <td><strong>@vehicle.Model</strong></td>
+                    <td>
+                        <span class="badge" style="background-color: @vehicle.Color.ToLower(); color: white;">
+                            @vehicle.Color
+                        </span>
+                    </td>
+                    <td>@vehicle.Year</td>
+                    <td>@vehicle.Horsepower HP</td>
+                    <td>@vehicle.TransmissionType</td>
+                    <td>@vehicle.Gas.ToString("N1") / @vehicle.FuelLimit.ToString("N1")</td>
+                    <td>
+                        @if (vehicle.IsEngineOn())
+                        {
+                            <span class="badge badge-success">
+                                <i class="fas fa-check-circle"></i> Running
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-secondary">
+                                <i class="fas fa-stop-circle"></i> Stopped
+                            </span>
+                        }
+                    </td>
+                    <td>
+                        <div class="btn-group btn-group-sm" role="group">
+                            @if (vehicle.IsEngineOn())
+                            {
+                                <a href="/Home/StopEngine?id=@vehicle.ID" class="btn btn-danger" title="Stop Engine">
+                                    <i class="fas fa-stop"></i>
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="/Home/StartEngine?id=@vehicle.ID" class="btn btn-success" title="Start Engine">
+                                    <i class="fas fa-play"></i>
+                                </a>
+                            }
+                            <a href="/Home/AddGas?id=@vehicle.ID" class="btn btn-warning" title="Add Gas">
+                                <i class="fas fa-gas-pump"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        
+        <div class="mt-3">
+            <p class="text-muted">
+                <small>Total vehicles: <strong>@Model.Vehicles.Count</strong></small>
+            </p>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+}
