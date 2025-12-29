@@ -1,7 +1,7 @@
 # Best Practices Workshop - Refactorización con Patrones de Diseño
 
 **Autor:** Hans Ortiz  
-**Fecha:** Diciembre 2024  
+**Fecha:** Diciembre 2025  
 **Universidad:** UDLA
 
 ---
